@@ -1,5 +1,5 @@
-import { getWordForm } from './utils.js';
-import { sidesWordForms } from './constants.js';
+import { getWordForm } from './utils';
+import { sidesWordForms } from './constants';
 
 export interface RollResult {
 	sum: number;

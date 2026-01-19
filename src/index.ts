@@ -1,8 +1,8 @@
 import { Bot, InlineKeyboard, Context, webhookCallback } from 'grammy';
-import { disassembleMatch, doRolls, type RollResult } from './diceLogic.js';
-import { emoji, timeWordForms, diceRegEx } from './constants.js';
-import { helloMarkup, dicesMarkup } from './keyboards.js';
-import { getWordForm, getMention } from './utils.js';
+import { disassembleMatch, doRolls, type RollResult } from './diceLogic';
+import { emoji, timeWordForms, diceRegEx } from './constants';
+import { helloMarkup, dicesMarkup } from './keyboards';
+import { getWordForm, getMention } from './utils';
 
 
 export interface Env {
