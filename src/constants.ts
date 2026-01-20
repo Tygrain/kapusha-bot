@@ -5,4 +5,5 @@ export const emoji: Record<number, string> = {
 
 export const timeWordForms = ['раз', 'раза', 'раз'];
 export const sidesWordForms = ['-гранный куб', '-гранных куба', '-гранных кубов'];
-export const diceRegEx = /^([1-9]\d{0,2})?d([1-9]\d{0,2})?(h|l)?([1-9]\d{0,2})?$/;
+export const diceRegEx = /([1-9]\d{0,2})?d([1-9]\d{0,2})?(h|l)?([1-9]\d{0,2})?/gi;
+

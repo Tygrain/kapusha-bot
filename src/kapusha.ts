@@ -6,12 +6,18 @@ import { getWordForm, getMention } from './utils';
 
 
 export function setup(bot: Bot) {
-  bot.hears(/^\/(r|roll|help|start)$/, (c) => c.reply(`Готова помочь, ${getMention(c)}!`, { parse_mode: "HTML", reply_markup: helloMarkup }));
+  bot.hears(/^\/(r|roll|help|start)$/i, (c) => c.reply(`Готова помочь, ${getMention(c)}!`, { parse_mode: "HTML", reply_markup: helloMarkup }));
 
-  bot.hears(/^\/(r|roll) (.+)/, async (c) => {
-    const rolls = c.match[2].trim().split(/\s+/).filter(i => i !== "/r").map(item => disassembleMatch(item.match(diceRegEx)) ?? [item]);
-    await sendFormattedAnswer(c, doRolls(rolls));
-  });
+  bot.hears(/^\/(r|roll)\s+(.+)/i, async (c) => {
+  const text = c.match[2];
+
+  const rolls = [...text.matchAll(diceRegEx)]
+    .map(m => disassembleMatch(m))
+    .filter((roll): roll is [number, number, number] => roll !== null);
+
+  await sendFormattedAnswer(c, doRolls(rolls));
+});
+
 
   bot.on("callback_query:data", async (c) => {
     const data = c.callbackQuery.data;
