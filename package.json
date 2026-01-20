@@ -1,14 +1,16 @@
 {
 	"name": "kapusha-bot",
-	"version": "0.0.0",
+	"version": "0.1.2",
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
-		"start": "wrangler dev",
+		"start": "npx tsx src/bot.ts",
 		"cf-typegen": "wrangler types"
 	},
 	"devDependencies": {
+		"@types/node": "^25.0.9",
+		"tsx": "^4.21.0",
 		"typescript": "^5.5.2",
 		"wrangler": "^4.35.0"
 	},
