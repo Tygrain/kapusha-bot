@@ -19,7 +19,7 @@ To run the bot, you need a token from [@BotFather](https://t.me/BotFather).
 
 There are two ways to run the bot locally for development.
 
-### 1. Webhooks Mode (Recommended for Cloudflare Workers)
+### 1. Webhooks Mode
 In this mode, the bot works as a web server and receives updates from Telegram.
 
 **Run:**
