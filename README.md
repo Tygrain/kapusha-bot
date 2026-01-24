@@ -1,64 +1,67 @@
 # Kapusha Bot
 
-Телеграм-бот, работающий на Cloudflare Workers с использованием библиотеки [grammY](https://grammy.dev/).
+This is an example of a simple Telegram bot that works on the **Cloudflare Workers** platform.
+It is a port of a similar JavaScript bot by [celtudson](https://github.com/celtudson).
 
-## Настройка
+The bot is built using the [grammY](https://grammy.dev/) framework.
 
-Для работы бота необходимо получить токен у [@BotFather](https://t.me/BotFather).
+## Setup
 
-1. Создайте файл `.dev.vars` в корне проекта (он игнорируется git).
-2. Добавьте в него ваш токен:
+To run the bot, you need a token from [@BotFather](https://t.me/BotFather).
+
+1. Create a file named `.dev.vars` in the root folder.
+2. Add your token there:
    ```
-   BOT_TOKEN=ваш_токен_здесь
+   BOT_TOKEN=your_token_here
    ```
 
-## Режимы разработки
+## Development Modes
 
-Проект поддерживает два режима работы для локальной разработки.
+There are two ways to run the bot locally for development.
 
-### 1. Режим Webhooks (рекомендуется для Cloudflare Workers)
-В этом режиме бот работает как HTTP-сервер, который получает обновления от Telegram через вебхуки.
+### 1. Webhooks Mode (Recommended for Cloudflare Workers)
+In this mode, the bot works as a web server and receives updates from Telegram.
 
-**Запуск:**
+**Run:**
 ```bash
 npx wrangler dev
 ```
-По умолчанию сервер запустится на `http://localhost:8787`.
+The server will start at `http://localhost:8787`.
 
-**Туннелирование:**
-Так как Telegram должен отправлять запросы на ваш локальный сервер по HTTPS, необходимо создать туннель.
+**Tunneling:**
+Telegram needs to send requests to your computer via HTTPS. You must use a tunnel.
 
-Используя Cloudflare Tunnel:
+Using Cloudflare Tunnel:
 ```bash
 npx cloudflared tunnel --url http://localhost:8787
 ```
-Или используя `ngrok`:
+Or using `ngrok`:
 ```bash
 ngrok http 8787
 ```
 
-**Регистрация вебхука:**
-После получения временного HTTPS-адреса от туннеля, его нужно зарегистрировать в Telegram API:
-`https://api.telegram.org/bot{BOT_TOKEN}/setWebhook?url={ВАШ_HTTPS_АДРЕС}`
+**Register Webhook:**
+After you get a temporary HTTPS address from the tunnel, tell Telegram to use it:
+`https://api.telegram.org/bot{BOT_TOKEN}/setWebhook?url={YOUR_HTTPS_URL}`
 
-### 2. Режим Polling
-В этом режиме бот сам подключается к серверам Telegram для получения обновлений. Это проще для быстрой разработки, так как не требует туннелирования и настройки вебхуков.
+### 2. Polling Mode
+In this mode, the bot connects to Telegram to ask for updates. This is easier because you don't need a tunnel.
 
-**Запуск:**
+**Run:**
 ```bash
 npm start
 ```
 
-## Деплой
+## Deployment
 
-Для деплоя бота в Cloudflare Workers:
+To deploy the bot to Cloudflare Workers:
 
-1. Опубликуйте воркер:
+1. Publish the worker:
    ```bash
    npm run deploy
    ```
-2. Установите секрет `BOT_TOKEN` в настройках Cloudflare:
+2. Set your `BOT_TOKEN` secret in Cloudflare:
    ```bash
    npx wrangler secret put BOT_TOKEN
    ```
-3. Зарегистрируйте URL вашего опубликованного воркера в Telegram через `setWebhook` (аналогично разделу про Webhooks).
+3. Register your production worker URL in Telegram using `setWebhook` (same way as in the Webhooks section).
