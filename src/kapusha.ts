@@ -5,7 +5,8 @@ import { helloMarkup, dicesMarkup } from './keyboards';
 import { getWordForm, getMention } from './utils';
 
 
-export function setup(bot: Bot) {
+export default function (bot: Bot) {
+  
   bot.hears(/^\/(r|roll|help|start)$/i, (c) => c.reply(`Готова помочь, ${getMention(c)}!`, { parse_mode: "HTML", reply_markup: helloMarkup }));
 
   bot.hears(/^\/(r|roll)\s+(.+)/i, async (c) => {
@@ -33,6 +34,8 @@ export function setup(bot: Bot) {
     }
     await c.answerCallbackQuery();
   });
+
+  return bot;
 }
 
 

@@ -1,20 +1,23 @@
 import { Bot, webhookCallback } from 'grammy';
-import { setup } from './kapusha';
+import kapusha from './kapusha';
 
 
-export interface Env {
+interface Env {
 	BOT_TOKEN: string;
 }
 
 
 export default {
-	async fetch(request: Request, env: { BOT_TOKEN: string }, ctx: ExecutionContext) {
+	async fetch(request: Request, env: Env) {
 		if (!env.BOT_TOKEN) {
 			throw new Error("BOT_TOKEN is not defined");
 		}
 
-		const bot = new Bot(env.BOT_TOKEN);
-		setup(bot);
+		if (request.method !== 'POST') {
+			throw new Error('Invalid request method');
+		}
+
+		const bot = kapusha(new Bot(env.BOT_TOKEN));
 		const handleUpdate = webhookCallback(bot, 'cloudflare-mod');
 
 		try {
