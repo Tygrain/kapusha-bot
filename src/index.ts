@@ -31,7 +31,8 @@ export default {
 			await next();
 		});
 
-		bot.hears(/^\/stats$/i, async (ctx) => {
+		bot.command("stats", async (ctx) => {
+			const tz = ctx.match?.trim() || 'UTC';
 			const list = await env.USERS.list();
 			const users = await Promise.all(list.keys.map(async (key) => {
 				const value = await env.USERS.get(key.name);
@@ -40,7 +41,7 @@ export default {
 			const activeUsers = users.filter(u => u && (Date.now() - u.lastActive) < 24 * 60 * 60 * 1000);
 			const totalUsers = `Всего пользователей: ${users.length}`;
 			const last24h = `Активных за последние 24 часа: ${activeUsers.length}`;
-			const topActive = activeUsers.sort((a, b) => b.lastActive - a.lastActive).slice(0, 5).map(u => `<a href="tg://user?id=${u.id}">${u.name}</a> (${new Date(u.lastActive).toLocaleString()})`).join('\n');
+			const topActive = activeUsers.sort((a, b) => b.lastActive - a.lastActive).slice(0, 5).map(u => `<a href="tg://user?id=${u.id}">${u.name}</a> (${new Date(u.lastActive).toLocaleTimeString("uk-UA", { timeZone: tz })})`).join('\n');
 			await ctx.reply([last24h, topActive, totalUsers].join('\n'), { parse_mode: "HTML" });
 		});
 
