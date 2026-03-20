@@ -16,3 +16,11 @@ export function getWordForm(num: number, forms: string[]): string {
   if (unit > 1 && unit < 5) return forms[1];
   return unit === 1 ? forms[0] : forms[1];
 }
+
+
+export function findTimeZone(input: string): string | undefined {
+  const search = input.toLowerCase();
+  return Intl.supportedValuesOf('timeZone').find(
+    tz => tz.toLowerCase().includes(search)
+  );
+}

@@ -1,5 +1,6 @@
 import { Bot, webhookCallback } from 'grammy';
 import kapusha from './kapusha';
+import { findTimeZone } from './utils';
 
 
 interface Env {
@@ -41,7 +42,7 @@ export default {
 		});
 
 		bot.command("stats", async (ctx) => {
-			const tz = ctx.match?.trim() || 'UTC';
+			const tz = findTimeZone(ctx.match?.trim()) || 'UTC';
 			const list = await env.USERS.list();
 			const users = await Promise.all(list.keys.map(async (key) => {
 				const value = await env.USERS.get(key.name);
