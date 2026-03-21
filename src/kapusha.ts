@@ -7,16 +7,25 @@ import { getWordForm, getMention } from './utils';
 
 export default function (bot: Bot) {
   
-  bot.hears(/^\/(r|roll|help|start)$/i, (c) => c.reply(`Готова помочь, ${getMention(c)}!`, { parse_mode: "HTML", reply_markup: helloMarkup }));
+//   bot.hears(/^\/(r|roll|help|start)$/i, (c) => c.reply(`Готова помочь, ${getMention(c)}!`, { parse_mode: "HTML", reply_markup: helloMarkup }));
 
-  bot.hears(/^\/(r|roll)\s+(.+)/i, async (c) => {
-  const text = c.match[2];
+//   bot.hears(/^\/(r|roll)\s+(.+)/i, async (c) => {
+//   const text = c.match[2];
 
+//   const rolls = [...text.matchAll(diceRegEx)]
+//     .map(m => disassembleMatch(m))
+//     .filter((roll): roll is [number, number, number] => roll !== null);
+
+//   await sendFormattedAnswer(c, doRolls(rolls));
+// });
+
+bot.command(["r", "roll"], async (ctx) => {
+  const text = ctx.match?.trim();
   const rolls = [...text.matchAll(diceRegEx)]
     .map(m => disassembleMatch(m))
     .filter((roll): roll is [number, number, number] => roll !== null);
 
-  await sendFormattedAnswer(c, doRolls(rolls));
+  await sendFormattedAnswer(ctx, doRolls(rolls));
 });
 
 
