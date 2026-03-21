@@ -41,7 +41,12 @@ export default function (bot: Bot) {
       .map(m => disassembleMatch(m))
       .filter((roll): roll is [number, number, number] => roll !== null);
 
-    const rollsText = rolls.map(r => `${r[0]}d${r[1]}${r[2] > 0 ? `h${r[2]}` : r[2] < 0 ? `l${-r[2]}` : ''}`).join(', ');
+    const rollsText = doRolls(rolls).map(row => {
+      const action = row[0].outAction;
+      const sums = row.map(r => r.outSum).join(', ');
+      return `${action}: ${sums}`;
+    }).join('\n');
+    
     await ctx.answerInlineQuery([
       {
         type: "article",
