@@ -6,27 +6,49 @@ import { getWordForm, getMention } from './utils';
 
 
 export default function (bot: Bot) {
-  
-//   bot.hears(/^\/(r|roll|help|start)$/i, (c) => c.reply(`Готова помочь, ${getMention(c)}!`, { parse_mode: "HTML", reply_markup: helloMarkup }));
 
-//   bot.hears(/^\/(r|roll)\s+(.+)/i, async (c) => {
-//   const text = c.match[2];
+  //   bot.hears(/^\/(r|roll|help|start)$/i, (c) => c.reply(`Готова помочь, ${getMention(c)}!`, { parse_mode: "HTML", reply_markup: helloMarkup }));
 
-//   const rolls = [...text.matchAll(diceRegEx)]
-//     .map(m => disassembleMatch(m))
-//     .filter((roll): roll is [number, number, number] => roll !== null);
+  //   bot.hears(/^\/(r|roll)\s+(.+)/i, async (c) => {
+  //   const text = c.match[2];
 
-//   await sendFormattedAnswer(c, doRolls(rolls));
-// });
+  //   const rolls = [...text.matchAll(diceRegEx)]
+  //     .map(m => disassembleMatch(m))
+  //     .filter((roll): roll is [number, number, number] => roll !== null);
 
-bot.command(["r", "roll"], async (ctx) => {
-  const text = ctx.match?.trim();
-  const rolls = [...text.matchAll(diceRegEx)]
-    .map(m => disassembleMatch(m))
-    .filter((roll): roll is [number, number, number] => roll !== null);
+  //   await sendFormattedAnswer(c, doRolls(rolls));
+  // });
 
-  await sendFormattedAnswer(ctx, doRolls(rolls));
-});
+  bot.command(["r", "roll"], async (ctx) => {
+    const text = ctx.match?.trim();
+    if (!text) {
+      await ctx.reply(`Готова помочь, ${getMention(ctx)}!`, {
+        parse_mode: "HTML",
+        reply_markup: helloMarkup
+      });
+    } else {
+      const rolls = [...text.matchAll(diceRegEx)]
+        .map(m => disassembleMatch(m))
+        .filter((roll): roll is [number, number, number] => roll !== null);
+
+      await sendFormattedAnswer(ctx, doRolls(rolls));
+    }
+  });
+
+  bot.inlineQuery(diceRegEx, async (ctx) => {
+    const query = ctx.inlineQuery.query.trim();
+    const rolls = [...query.matchAll(diceRegEx)]
+      .map(m => disassembleMatch(m))
+      .filter((roll): roll is [number, number, number] => roll !== null);
+    await ctx.answerInlineQuery([
+      {
+        type: "article",
+        id: "0",
+        title: `Результат броска`,
+        input_message_content: { message_text: `Результат броска <pre>${query}</pre>\n ${doRolls(rolls)}`, parse_mode: "HTML" },
+      },
+    ]);
+  });
 
 
   bot.on("callback_query:data", async (c) => {
