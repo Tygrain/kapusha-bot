@@ -40,12 +40,14 @@ export default function (bot: Bot) {
     const rolls = [...query.matchAll(diceRegEx)]
       .map(m => disassembleMatch(m))
       .filter((roll): roll is [number, number, number] => roll !== null);
+
+    const rollsText = rolls.map(r => `${r[0]}d${r[1]}${r[2] > 0 ? `h${r[2]}` : r[2] < 0 ? `l${-r[2]}` : ''}`).join(', ');
     await ctx.answerInlineQuery([
       {
         type: "article",
         id: "0",
         title: `Результат броска`,
-        input_message_content: { message_text: `Результат броска <pre>${query}</pre>\n ${sendFormattedAnswer(ctx, doRolls(rolls))}`, parse_mode: "HTML" },
+        input_message_content: { message_text: `Результат броска <pre>${query}</pre>\n ${rollsText}`, parse_mode: "HTML" },
       },
     ]);
   });
