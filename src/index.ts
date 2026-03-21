@@ -3,9 +3,10 @@ import kapusha from './kapusha';
 import { findTimeZone } from './utils';
 
 
-interface Env {
-	BOT_TOKEN: string;
-	USERS: KVNamespace;
+declare global {
+	interface Env {
+		BOT_TOKEN: string;
+	}
 }
 
 interface UserData {
