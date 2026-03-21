@@ -45,7 +45,7 @@ export default function (bot: Bot) {
         type: "article",
         id: "0",
         title: `Результат броска`,
-        input_message_content: { message_text: `Результат броска <pre>${query}</pre>\n ${doRolls(rolls)}`, parse_mode: "HTML" },
+        input_message_content: { message_text: `Результат броска <pre>${query}</pre>\n ${sendFormattedAnswer(ctx, doRolls(rolls))}`, parse_mode: "HTML" },
       },
     ]);
   });
