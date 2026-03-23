@@ -74,10 +74,23 @@ async function sendFormattedAnswer(ctx: Context, rollsData: RollResult[][], with
 
 async function sendCharByChar(ctx: Context, text: string, timeout = 5000) {
   const draft_id = Date.now();
+  const parts = splitInto10ByIndex(text);
   let currentText = '';
-  for (const char of text) {
-    currentText += char;
+  
+  for (const part of parts) {
+    currentText += part;
     await ctx.api.sendMessageDraft(ctx.chat?.id!, draft_id, currentText);
-    await new Promise(resolve => setTimeout(resolve, timeout / text.length));
+    await new Promise(resolve => setTimeout(resolve, timeout / parts.length));
   }
+}
+
+function splitInto10ByIndex(str: string): string[] {
+  const n = 10;
+  const parts = [];
+  for (let k = 0; k < n; k++) {
+    const start = Math.round(k * str.length / n);
+    const end = Math.round((k + 1) * str.length / n);
+    parts.push(str.slice(start, end));
+  }
+  return parts;
 }
