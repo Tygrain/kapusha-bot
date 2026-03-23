@@ -35,29 +35,6 @@ export default function (bot: Bot) {
     }
   });
 
-  bot.inlineQuery(diceRegEx, async (ctx) => {
-    const query = ctx.inlineQuery.query.trim();
-    const rolls = [...query.matchAll(diceRegEx)]
-      .map(m => disassembleMatch(m))
-      .filter((roll): roll is [number, number, number] => roll !== null);
-
-    const rollsText = doRolls(rolls).map(row => {
-      const action = row[0].outAction;
-      const sums = row.map(r => r.outSum).join(', ');
-      return `${action}: ${sums}`;
-    }).join('\n');
-    
-    await ctx.answerInlineQuery([
-      {
-        type: "article",
-        id: "0",
-        title: `Результат броска`,
-        input_message_content: { message_text: `Результат броска <pre>${query}</pre>\n ${rollsText}`, parse_mode: "HTML" },
-      },
-    ]);
-  });
-
-
   bot.on("callback_query:data", async (c) => {
     const data = c.callbackQuery.data;
     const match = data.match(diceRegEx);
@@ -81,6 +58,7 @@ async function sendFormattedAnswer(ctx: Context, rollsData: RollResult[][], with
   const flatResults = rollsData.flat();
   if (flatResults.length === 0) return;
   const maxLen = Math.max(...flatResults.map(r => r.outSum.length));
+  const draft_id = Date.now();
 
   let text = `🎲 ${getMention(ctx)} rolled${rollsData.length > 1 || rollsData[0].length > 1 ? '\n' : ' '}`;
   for (const row of rollsData) {
@@ -88,6 +66,8 @@ async function sendFormattedAnswer(ctx: Context, rollsData: RollResult[][], with
     for (const line of row) {
       text += `<code>${line.outSum.padStart(maxLen, ' ')}</code>${withEmoji ? (emoji[Math.floor(line.sum / 2)] || '') : ''} ${line.outDice}\n`;
     }
+    await ctx.api.sendMessageDraft(ctx.chat?.id!, draft_id, text);
+    await new Promise(resolve => setTimeout(resolve, 300));
   }
-  await ctx.reply(text, { parse_mode: "HTML", reply_markup: keyboard });
+  // await ctx.reply(text, { parse_mode: "HTML", reply_markup: keyboard });
 }

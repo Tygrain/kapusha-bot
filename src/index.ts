@@ -42,6 +42,13 @@ export default {
 			await next();
 		});
 
+		bot.command("json", async (ctx) => {
+			const m = ctx.msg?.reply_to_message;
+			if (m) {
+				await ctx.reply(`<code>${JSON.stringify(m)}</code>`, { parse_mode: "HTML" });
+			}
+		});
+
 		bot.command("stats", async (ctx) => {
 			const tz = findTimeZone(ctx.match?.trim()) || 'UTC';
 			const list = await env.USERS.list();
