@@ -68,7 +68,7 @@ async function sendFormattedAnswer(ctx: Context, rollsData: RollResult[][], with
     }
   }
   // await ctx.reply(text, { parse_mode: "HTML", reply_markup: keyboard });
-  sendCharByChar(ctx, text);
+  await sendCharByChar(ctx, text);
 }
 
 
