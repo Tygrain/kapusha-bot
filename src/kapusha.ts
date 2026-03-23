@@ -64,10 +64,20 @@ async function sendFormattedAnswer(ctx: Context, rollsData: RollResult[][], with
   for (const row of rollsData) {
     text += (row.length > 1 ? `${row.length} ${getWordForm(row.length, timeWordForms)} по «${row[0].outAction}»:\n` : `${row[0].outAction}: `);
     for (const line of row) {
-      text += `<code>${line.outSum.padStart(maxLen, ' ')}</code>${withEmoji ? (emoji[Math.floor(line.sum / 2)] || '') : ''} ${line.outDice}\n`;
+      text += `${line.outSum.padStart(maxLen, ' ')} ${withEmoji ? (emoji[Math.floor(line.sum / 2)] || '') : ''} ${line.outDice}\n`;
     }
-    await ctx.api.sendMessageDraft(ctx.chat?.id!, draft_id, text);
-    await new Promise(resolve => setTimeout(resolve, 300));
   }
   // await ctx.reply(text, { parse_mode: "HTML", reply_markup: keyboard });
+  sendCharByChar(ctx, text);
+}
+
+
+async function sendCharByChar(ctx: Context, text: string, timeout = 5000) {
+  const draft_id = Date.now();
+  let currentText = '';
+  for (const char of text) {
+    currentText += char;
+    await ctx.api.sendMessageDraft(ctx.chat?.id!, draft_id, currentText);
+    await new Promise(resolve => setTimeout(resolve, timeout / text.length));
+  }
 }
