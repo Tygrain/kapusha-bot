@@ -74,7 +74,8 @@ async function sendFormattedAnswer(ctx: Context, rollsData: RollResult[][], with
 
 async function sendCharByChar(ctx: Context, text: string, timeout = 5000) {
   const draft_id = Date.now();
-  const parts = splitInto10ByIndex(text);
+  // const parts = splitInto10ByIndex(text);
+  const parts = text.split(' ');
   let currentText = '';
   
   for (const part of parts) {
