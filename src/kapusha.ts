@@ -67,8 +67,8 @@ async function sendFormattedAnswer(ctx: Context, rollsData: RollResult[][], with
       text += `${line.outSum.padStart(maxLen, ' ')} ${withEmoji ? (emoji[Math.floor(line.sum / 2)] || '') : ''} ${line.outDice}\n`;
     }
   }
-  // await ctx.reply(text, { parse_mode: "HTML", reply_markup: keyboard });
-  await sendCharByChar(ctx, text);
+  await ctx.reply(text, { parse_mode: "HTML", reply_markup: keyboard });
+  // await sendCharByChar(ctx, text);
 }
 
 
@@ -83,6 +83,7 @@ async function sendCharByChar(ctx: Context, text: string, timeout = 5000) {
     await ctx.api.sendMessageDraft(ctx.chat?.id!, draft_id, currentText);
     await new Promise(resolve => setTimeout(resolve, timeout / parts.length));
   }
+  await ctx.reply(currentText);
 }
 
 function splitInto10ByIndex(str: string): string[] {
